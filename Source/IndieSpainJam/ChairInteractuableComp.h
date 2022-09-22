@@ -3,24 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interactuable.h"
-#include "ChairInteractuable.generated.h"
+#include "InteractuableComp.h"
+#include "ChairInteractuableComp.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class INDIESPAINJAM_API AChairInteractuable : public AInteractuable
+UCLASS(meta=(BlueprintSpawnableComponent))
+class INDIESPAINJAM_API UChairInteractuableComp : public UInteractuableComp
 {
 	GENERATED_BODY()
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-public:
 	virtual void UpdatePercentile() override;
 
+public:
 	UPROPERTY(EditAnywhere)
 	FVector MinScale = FVector(0,0, 0);
 	UPROPERTY(EditAnywhere)

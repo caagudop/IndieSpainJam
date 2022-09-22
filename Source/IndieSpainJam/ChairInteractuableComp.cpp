@@ -1,10 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ChairInteractuable.h"
+#include "ChairInteractuableComp.h"
 
-
-void AChairInteractuable::BeginPlay()
+void UChairInteractuableComp::BeginPlay()
 {
 	XDiff = MaxScale.X - MinScale.X;
 	YDiff = MaxScale.Y - MinScale.Y;
@@ -13,12 +12,12 @@ void AChairInteractuable::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AChairInteractuable::UpdatePercentile()
+void UChairInteractuableComp::UpdatePercentile()
 {
 	const FVector NewScale = FVector(
 		MinScale.X + XDiff * SliderValue,
 		MinScale.Y + YDiff * SliderValue,
 		MinScale.Z + ZDiff * SliderValue);
-	SetActorScale3D(NewScale);
+	GetOwner()->SetActorScale3D(NewScale);
 	Super::UpdatePercentile();
 }

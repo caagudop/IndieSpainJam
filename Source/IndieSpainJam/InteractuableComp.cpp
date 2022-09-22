@@ -1,23 +1,26 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Interactuable.h"
+#include "InteractuableComp.h"
+
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/Slider.h"
 #include "Kismet/GameplayStatics.h"
 
-class USlider;
-// Sets default values
-AInteractuable::AInteractuable()
+// Sets default values for this component's properties
+UInteractuableComp::UInteractuableComp()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
+	// off to improve performance if you don't need them.
+	PrimaryComponentTick.bCanEverTick = true;
 
+	// ...
 }
 
-// Called when the game starts or when spawned
-void AInteractuable::BeginPlay()
+
+// Called when the game starts
+void UInteractuableComp::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -36,8 +39,8 @@ void AInteractuable::BeginPlay()
 	if (Slider != nullptr)
 	{
 		Slider->SetValue(SliderValue);
-		Slider->OnValueChanged.AddDynamic(this, &AInteractuable::OnSliderValueChanged);
-		Slider->OnMouseCaptureEnd.AddDynamic(this, &AInteractuable::OnSliderMouseCaptureEnd);
+		Slider->OnValueChanged.AddDynamic(this, &UInteractuableComp::OnSliderValueChanged);
+		Slider->OnMouseCaptureEnd.AddDynamic(this, &UInteractuableComp::OnSliderMouseCaptureEnd);
 	}
 	else
 	{
@@ -45,16 +48,19 @@ void AInteractuable::BeginPlay()
 	}
 	
 	// Update percentile
-	UpdatePercentile();
+	UpdatePercentile();	
 }
+
 
 // Called every frame
-void AInteractuable::Tick(float DeltaTime)
+void UInteractuableComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	Super::Tick(DeltaTime);
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// ...
 }
 
-void AInteractuable::OpenSlider()
+void UInteractuableComp::OpenSlider()
 {
 	if (WidgetRef == nullptr)
 	{
@@ -66,7 +72,7 @@ void AInteractuable::OpenSlider()
 	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PlayerController, WidgetRef, EMouseLockMode::LockAlways, false);
 }
 
-void AInteractuable::CloseSlider()
+void UInteractuableComp::CloseSlider()
 {
 	if (WidgetRef == nullptr)
 	{
@@ -79,17 +85,17 @@ void AInteractuable::CloseSlider()
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController);
 }
 
-void AInteractuable::UpdatePercentile()
+void UInteractuableComp::UpdatePercentile()
 {
 	UE_LOG(LogTemp, Display, TEXT("Percentile value is %f"), SliderValue);
 }
 
-void AInteractuable::OnSliderValueChanged(float NewValue)
+void UInteractuableComp::OnSliderValueChanged(float NewValue)
 {
 	SliderValue = NewValue;
 }
 
-void AInteractuable::OnSliderMouseCaptureEnd()
+void UInteractuableComp::OnSliderMouseCaptureEnd()
 {
 	UpdatePercentile();
 }
