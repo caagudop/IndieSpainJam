@@ -18,7 +18,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	
+private:
+	UFUNCTION()
+	void OnSliderValueChanged(float NewValue);
+	UFUNCTION()
+	void OnSliderMouseCaptureEnd();
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,12 +35,15 @@ public:
 	void CloseSlider();
 	UFUNCTION(BlueprintCallable)
 	virtual void UpdatePercentile();
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UUserWidget* WidgetRef;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> WidgetBlueprint;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0.0", ClampMax="1.0"))
 	float SliderValue;
 	
 private:
+	UPROPERTY()
 	APlayerController* PlayerController;
+	UPROPERTY()
+	UUserWidget* WidgetRef;
 };

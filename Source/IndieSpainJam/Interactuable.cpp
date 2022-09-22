@@ -2,12 +2,12 @@
 
 
 #include "Interactuable.h"
-
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
-#include "GameFramework/GameSession.h"
+#include "Components/Slider.h"
 #include "Kismet/GameplayStatics.h"
 
+class USlider;
 // Sets default values
 AInteractuable::AInteractuable()
 {
@@ -22,6 +22,29 @@ void AInteractuable::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	
+	// Create widget
+	if (!WidgetBlueprint)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Widget Blueprint not selected"));
+		return;
+	}
+	WidgetRef = CreateWidget<UUserWidget>(GetWorld(), WidgetBlueprint);
+	WidgetRef->AddToViewport();
+	WidgetRef->SetVisibility(ESlateVisibility::Hidden);
+	USlider* Slider = Cast<USlider>(WidgetRef->GetWidgetFromName(FName(TEXT("Slider_0"))));
+	if (Slider != nullptr)
+	{
+		Slider->SetValue(SliderValue);
+		Slider->OnValueChanged.AddDynamic(this, &AInteractuable::OnSliderValueChanged);
+		Slider->OnMouseCaptureEnd.AddDynamic(this, &AInteractuable::OnSliderMouseCaptureEnd);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Slider not found"));
+	}
+	
+	// Update percentile
 	UpdatePercentile();
 }
 
@@ -59,4 +82,14 @@ void AInteractuable::CloseSlider()
 void AInteractuable::UpdatePercentile()
 {
 	UE_LOG(LogTemp, Display, TEXT("Percentile value is %f"), SliderValue);
+}
+
+void AInteractuable::OnSliderValueChanged(float NewValue)
+{
+	SliderValue = NewValue;
+}
+
+void AInteractuable::OnSliderMouseCaptureEnd()
+{
+	UpdatePercentile();
 }
