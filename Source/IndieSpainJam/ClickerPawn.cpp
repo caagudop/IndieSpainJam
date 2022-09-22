@@ -9,7 +9,6 @@ AClickerPawn::AClickerPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//OnClicked.AddUnique(&AClickerPawn::ActionOnClicked);
-
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +28,12 @@ void AClickerPawn::Tick(float DeltaTime)
 void AClickerPawn::ActionOnClicked()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("uwu"));
+}
+
+void AClickerPawn::NotifyActorOnClicked(FKey ButtonPressed)
+{
+	Super::NotifyActorOnClicked(ButtonPressed);
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString("++++++++++"));
 }
 
 
