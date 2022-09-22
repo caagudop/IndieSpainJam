@@ -25,4 +25,6 @@ public:
 
 	UFUNCTION()
 	void ActionOnClicked();
+
+	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
 };
