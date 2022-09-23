@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "InteractuableComp.h"
-#include "ChairInteractuableComp.generated.h"
+#include "ScaleInteractuableComp.generated.h"
 
 /**
  * 
  */
 UCLASS(meta=(BlueprintSpawnableComponent))
-class INDIESPAINJAM_API UChairInteractuableComp : public UInteractuableComp
+class INDIESPAINJAM_API UScaleInteractuableComp : public UInteractuableComp
 {
 	GENERATED_BODY()
 	
