@@ -76,6 +76,21 @@ DerivedDataCache/*
 #Starter Content
 Content/StarterContent/*
 
+#Starter Content
+Content/ThirdPerson/*
+
+#Starter Content
+Content/__ExternalActors__/*
+
+#Starter Content
+Content/__ExternalObjects__/*
+
+#Starter Content
+Content/Characters/*
+
+#Starter Content
+Content/LevelPrototyping/*
+
 # Rider
 # Default ignored files
 /shelf/
