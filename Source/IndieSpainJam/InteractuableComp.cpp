@@ -99,3 +99,8 @@ void UInteractuableComp::OnSliderMouseCaptureEnd()
 {
 	UpdatePercentile();
 }
+
+bool UInteractuableComp::HasReachedGoal()
+{
+	return SliderValue >= (GoalValue - ErrorMargin) && SliderValue <= (GoalValue + ErrorMargin);
+} 

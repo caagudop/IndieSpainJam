@@ -31,11 +31,16 @@ public:
 
 	UFUNCTION(BlueprintCallable) void OpenSlider();
     UFUNCTION(BlueprintCallable) void CloseSlider();
+    UFUNCTION(BlueprintCallable) bool HasReachedGoal();
     
     UPROPERTY(EditAnywhere) TSubclassOf<UUserWidget> WidgetBlueprint;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0.0", ClampMax="1.0"))
     float SliderValue;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0.0", ClampMax="1.0"))
+	float GoalValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0.0", ClampMax="1.0"))
+	float ErrorMargin;
+	
 private:
 	UPROPERTY() APlayerController* PlayerController;
 	UPROPERTY() UUserWidget* WidgetRef;
