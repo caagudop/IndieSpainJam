@@ -19,7 +19,6 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	virtual void UpdatePercentile();
 
 private:
 	UFUNCTION() void OnSliderValueChanged(float NewValue);
@@ -32,6 +31,7 @@ public:
 	UFUNCTION(BlueprintCallable) void OpenSlider();
     UFUNCTION(BlueprintCallable) void CloseSlider();
     UFUNCTION(BlueprintCallable) bool HasReachedGoal();
+	UFUNCTION(BlueprintCallable) virtual void UpdatePercentile();
     
     UPROPERTY(EditAnywhere) TSubclassOf<UUserWidget> WidgetBlueprint;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0.0", ClampMax="1.0"))
