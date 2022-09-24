@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractuableComp.h"
 #include "GameFramework/Pawn.h"
 #include "ClickerPawn.generated.h"
 
@@ -30,5 +29,5 @@ public:
 	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 
 private:
-	UPROPERTY() UInteractuableComp* InteractuableComp;
+	//UPROPERTY() UInteractuableComp* InteractuableComp;
 };

@@ -15,7 +15,7 @@ AClickerPawn::AClickerPawn()
 void AClickerPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	InteractuableComp = FindComponentByClass<UInteractuableComp>();
+	//InteractuableComp = FindComponentByClass<UInteractuableComp>();
 }
 
 // Called every frame
@@ -35,12 +35,12 @@ void AClickerPawn::NotifyActorOnClicked(FKey ButtonPressed)
 	Super::NotifyActorOnClicked(ButtonPressed);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString("++++++++++"));
 	
-	if (InteractuableComp == nullptr)
+	/*if (InteractuableComp == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("InteractuableComp not found"));
 		return;
 	}
-	InteractuableComp->OpenSlider();
+	InteractuableComp->OpenSlider();*/
 }
 
 

@@ -40,7 +40,7 @@ AWalkingCharacter::AWalkingCharacter()
 void AWalkingCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	InteractuableComp = FindComponentByClass<UInteractuableComp>();
+	//InteractuableComp = FindComponentByClass<UInteractuableComp>();
 
 	CanMove = true;
 }
@@ -50,7 +50,7 @@ void AWalkingCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (!scaleShow){
-		InteractuableComp->OpenSlider();
+		//InteractuableComp->OpenSlider();
 		scaleShow = true;
 	}
 

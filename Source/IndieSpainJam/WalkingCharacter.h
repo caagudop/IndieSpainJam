@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "InteractuableComp.h"
 #include "WalkingCharacter.generated.h"
 
 UCLASS()
@@ -38,7 +37,7 @@ public:
 	
 private:
 	bool scaleShow = false;
-	UPROPERTY() UInteractuableComp* InteractuableComp;
+	//UPROPERTY() UInteractuableComp* InteractuableComp;
 	float zPosition;
 	FVector tempPos = FVector();
 	FVector tempPosCam = FVector();
