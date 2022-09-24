@@ -33,14 +33,21 @@ public:
 	}
 
 	void RestartLevel();
+	UPROPERTY(EditAnywhere)
+		USkeletalMesh* Skeltal1;
+
+	UPROPERTY(EditAnywhere)
+		USkeletalMesh* Skeltal2;
 
 	
 private:
 	bool scaleShow = false;
 	//UPROPERTY() UInteractuableComp* InteractuableComp;
+	void ChangeForm();
 	float zPosition;
 	FVector tempPos = FVector();
 	FVector tempPosCam = FVector();
 	bool CanMove;
+	bool changed = true;
 
 };

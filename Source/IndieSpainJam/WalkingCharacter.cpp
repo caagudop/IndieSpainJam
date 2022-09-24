@@ -41,7 +41,6 @@ void AWalkingCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	//InteractuableComp = FindComponentByClass<UInteractuableComp>();
-
 	CanMove = true;
 }
 
@@ -66,11 +65,20 @@ void AWalkingCharacter::Tick(float DeltaTime)
 void AWalkingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-
+	InputComponent->BindAction("ChangeForm", EInputEvent::IE_Pressed, this, &AWalkingCharacter::ChangeForm);
 }
 
 void AWalkingCharacter::RestartLevel()
 {
+}
+
+void AWalkingCharacter::ChangeForm()
+{
+	if (changed)
+		GetMesh()->SetSkeletalMesh(Skeltal1);
+	else
+		GetMesh()->SetSkeletalMesh(Skeltal2);
+
+	changed = !changed;
 }
 
