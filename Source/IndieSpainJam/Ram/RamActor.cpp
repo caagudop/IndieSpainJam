@@ -3,8 +3,8 @@
 
 #include "RamActor.h"
 
+#include "Interactuables/RamInteractuableComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "RamInteractuableComponent.h"
 
 // Sets default values
 ARamActor::ARamActor()

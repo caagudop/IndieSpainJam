@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RamActor.h"
 #include "Components/ActorComponent.h"
+#include "IndieSpainJam/Ram/RamActor.h"
 #include "RamInteractuableComponent.generated.h"
 
 
