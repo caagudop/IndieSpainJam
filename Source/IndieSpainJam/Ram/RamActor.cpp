@@ -3,6 +3,7 @@
 
 #include "RamActor.h"
 
+#include "RAMInteractive.h"
 #include "Interactuables/RamInteractuableComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -93,6 +94,8 @@ float ARamActor::GetLightAbs(float value)
 	return value;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+
 float ARamActor::GetValue()
 {
 	if (Origin == nullptr || Destination == nullptr || Selector == nullptr)
@@ -100,7 +103,8 @@ float ARamActor::GetValue()
 		UE_LOG(LogTemp, Error, TEXT("Ram references bad configured"));
 		return 0;
 	}
-	
+
+	// TODO: cache this value
 	float distance;
 	if (LockAxis == ELockAxis::X)
 	{
@@ -113,7 +117,21 @@ float ARamActor::GetValue()
 	return distance / Length;
 }
 
-void ARamActor::LinkInteractuable(URamInteractuableComponent* interactuable)
+// ---------------------------------------------------------------------------------------------------------------------
+
+void ARamActor::UpdateInteractives()
+{
+	const float slideValue = GetValue();
+	for (const TObjectPtr<UObject>& interactive : LinkedInteractives)
+	{
+		IRAMInteractive::Execute_OnSlideUpdated(interactive, slideValue);
+	}
+	
+} // UpdateInteractives
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+void ARamActor::LinkInteractive(UObject* interactive, bool bUpdateSlide)
 {
 	if (Origin == nullptr || Destination == nullptr || Selector == nullptr)
 	{
@@ -121,42 +139,78 @@ void ARamActor::LinkInteractuable(URamInteractuableComponent* interactuable)
 		return;
 	}
 	
-	CurrentInteractuable = interactuable;
+	if (!UKismetSystemLibrary::DoesImplementInterface(interactive, URAMInteractive::StaticClass()))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Object %s doesn't support RAMInteractive"), *interactive->GetName());
+		return;	
+	}
 
+	LinkedInteractives.Add(interactive);
+	if (bUpdateSlide)
+	{
+		UpdateSlide(IRAMInteractive::Execute_GetSlideValue(interactive));
+	}
+	
+} // LinkInteractive
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+void ARamActor::UnlinkInteractive(UObject* interactive)
+{
+	LinkedInteractives.Remove(interactive);
+	
+} // UnlinkInteractive
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+void ARamActor::UnlinkAllInteractives()
+{
+	LinkedInteractives.Empty();
+	
+} // UnlinkAllInteractives
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+void ARamActor::UpdateSlide(float slideValue)
+{
 	// Update Selector position
-	float distance = Length * CurrentInteractuable->SliderValue;
+	const float distance = Length * slideValue;
 	FVector newLocation = Selector->GetComponentLocation();;
 	if (LockAxis == ELockAxis::X)
 	{
 		newLocation.X = Origin->GetComponentLocation().X + distance;
-	} else
+	}
+	else
 	{
 		newLocation.Y = Origin->GetComponentLocation().Y + distance;
 	}
 	Selector->SetWorldLocation(newLocation);
-}
+	
+	UpdateInteractives();
+	
+} // UpdateSlide
 
-void ARamActor::UnlinkInteractuable()
-{
-	CurrentInteractuable = nullptr;
-}
-
+// ---------------------------------------------------------------------------------------------------------------------
 
 void ARamActor::OnSelectorClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
 	IsSelectorDragged = true;
 	UE_LOG(LogTemp, Warning, TEXT("CLICKED!!"));
-}
+	
+} // OnSelectorClicked
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 void ARamActor::OnReleased()
 {
 	IsSelectorDragged = false;
-	if (CurrentInteractuable != nullptr)
-	{
-		CurrentInteractuable->UpdatePercentile(GetValue());		
-	}
+	UpdateInteractives();
+	
 	UE_LOG(LogTemp, Warning, TEXT("RELEASED!!"));
-}
+	
+} // OnReleased
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 void ARamActor::UpdateSelectorToMousePosition()
 {

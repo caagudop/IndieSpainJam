@@ -37,14 +37,16 @@ private:
 	
 	float Length;
 	bool IsSelectorDragged;
-	UPROPERTY() URamInteractuableComponent* CurrentInteractuable;
+	UPROPERTY() TArray<TObjectPtr<UObject>> LinkedInteractives;
 	UPROPERTY() APlayerController* PlayerController;
 	
 public:	 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	UFUNCTION(BlueprintCallable) void LinkInteractuable(URamInteractuableComponent* interactuable);
-	UFUNCTION(BlueprintCallable) void UnlinkInteractuable();
+	UFUNCTION(BlueprintCallable) void LinkInteractive(UObject* interactive, bool bUpdateSlide = true);
+	UFUNCTION(BlueprintCallable) void UnlinkInteractive(UObject* interactive);
+	UFUNCTION(BlueprintCallable) void UnlinkAllInteractives();
+	UFUNCTION(BlueprintCallable) void UpdateSlide(float slideValue);
 	UFUNCTION(BlueprintCallable) float GetValue();
 
 	UPROPERTY(EditAnywhere) ELockAxis LockAxis;
@@ -64,5 +66,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget))
 	FTransform TestTr;
+	
+protected:
+	void UpdateInteractives();
 	
 };

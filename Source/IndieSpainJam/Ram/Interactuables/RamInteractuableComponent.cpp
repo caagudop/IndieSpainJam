@@ -51,5 +51,6 @@ void URamInteractuableComponent::OnActorClicked(AActor* Actor, FKey ButtonPresse
 		UE_LOG(LogTemp, Error, TEXT("Ram not configured"));
 		return;
 	}
-	Ram->LinkInteractuable(this);
+	Ram->LinkInteractive(this, true);
+	
 }
