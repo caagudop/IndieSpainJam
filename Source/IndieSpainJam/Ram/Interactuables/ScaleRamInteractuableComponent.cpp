@@ -12,9 +12,9 @@ void UScaleRamInteractuableComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UScaleRamInteractuableComponent::UpdatePercentile(float value)
+void UScaleRamInteractuableComponent::OnSlideUpdated_Implementation(float slideValue)
 {
-	Super::UpdatePercentile(value);
+	Super::OnSlideUpdated_Implementation(slideValue);
 	const FVector NewScale = FVector(
 		MinScale.X + XDiff * SliderValue,
 		MinScale.Y + YDiff * SliderValue,

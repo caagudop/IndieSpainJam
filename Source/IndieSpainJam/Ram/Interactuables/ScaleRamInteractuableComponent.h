@@ -17,8 +17,8 @@ class INDIESPAINJAM_API UScaleRamInteractuableComponent : public URamInteractuab
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void UpdatePercentile(float value) override;
-
+	virtual void OnSlideUpdated_Implementation(float slideValue) override;
+	
 public:
 	UPROPERTY(EditAnywhere)
 	FVector MinScale = FVector(0,0, 0);

@@ -20,7 +20,7 @@ void URamInteractuableComponent::BeginPlay()
 	Super::BeginPlay();
 
 	GetOwner()->OnClicked.AddDynamic(this, &URamInteractuableComponent::OnActorClicked);
-	UpdatePercentile(SliderValue);
+	OnSlideUpdated_Implementation(SliderValue);
 }
 
 
@@ -31,13 +31,6 @@ void URamInteractuableComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 	// ...
 }
-
-void URamInteractuableComponent::UpdatePercentile(float value)
-{
-	SliderValue = FMath::Clamp(value, 0.0, 1.0);
-	UE_LOG(LogTemp, Display, TEXT("Percentile value is %f"), SliderValue);
-}
-
 
 bool URamInteractuableComponent::HasReachedGoal()
 {
@@ -51,6 +44,17 @@ void URamInteractuableComponent::OnActorClicked(AActor* Actor, FKey ButtonPresse
 		UE_LOG(LogTemp, Error, TEXT("Ram not configured"));
 		return;
 	}
+	Ram->UnlinkAllInteractives();
 	Ram->LinkInteractive(this, true);
-	
+}
+
+void URamInteractuableComponent::OnSlideUpdated_Implementation(float slideValue)
+{
+	SliderValue = FMath::Clamp(slideValue, 0.0, 1.0);
+	UE_LOG(LogTemp, Display, TEXT("Percentile value is %f"), SliderValue);
+}
+
+float URamInteractuableComponent::GetSlideValue_Implementation() const
+{
+	return SliderValue;
 }

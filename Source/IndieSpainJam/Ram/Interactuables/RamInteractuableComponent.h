@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "IndieSpainJam/Ram/RamActor.h"
+#include "IndieSpainJam/Ram/RAMInteractive.h"
 #include "RamInteractuableComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class INDIESPAINJAM_API URamInteractuableComponent : public UActorComponent
+class INDIESPAINJAM_API URamInteractuableComponent : public UActorComponent, public IRAMInteractive
 {
 	GENERATED_BODY()
 
@@ -26,7 +27,6 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	UFUNCTION(BlueprintCallable) bool HasReachedGoal();
-	UFUNCTION(BlueprintCallable) virtual void UpdatePercentile(float value);
 	UFUNCTION() void OnActorClicked(AActor* Actor, FKey ButtonPressed);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -38,4 +38,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0.0", ClampMax="1.0"))
 	float ErrorMargin;
 
+	virtual void OnSlideUpdated_Implementation(float slideValue) override;
+	virtual float GetSlideValue_Implementation() const override;
 };
