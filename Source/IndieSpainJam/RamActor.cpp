@@ -4,6 +4,7 @@
 #include "RamActor.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "RamInteractuableComponent.h"
 
 // Sets default values
 ARamActor::ARamActor()
@@ -112,7 +113,7 @@ float ARamActor::GetValue()
 	return distance / Length;
 }
 
-void ARamActor::LinkInteractuable(UInteractuableComp* interactuable)
+void ARamActor::LinkInteractuable(URamInteractuableComponent* interactuable)
 {
 	if (Origin == nullptr || Destination == nullptr || Selector == nullptr)
 	{
@@ -152,7 +153,7 @@ void ARamActor::OnReleased()
 	IsSelectorDragged = false;
 	if (CurrentInteractuable != nullptr)
 	{
-		CurrentInteractuable->UpdatePercentile();		
+		CurrentInteractuable->UpdatePercentile(GetValue());		
 	}
 	UE_LOG(LogTemp, Warning, TEXT("RELEASED!!"));
 }

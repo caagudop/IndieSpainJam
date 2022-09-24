@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractuableComp.h"
 #include "GameFramework/Actor.h"
 #include "RamActor.generated.h"
 
 
+class URamInteractuableComponent;
 UENUM(BlueprintType)
 enum class ELockAxis : uint8
 {
@@ -37,13 +37,13 @@ private:
 	
 	float Length;
 	bool IsSelectorDragged;
-	UPROPERTY() UInteractuableComp* CurrentInteractuable;
+	UPROPERTY() URamInteractuableComponent* CurrentInteractuable;
 	UPROPERTY() APlayerController* PlayerController;
 	
 public:	 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	UFUNCTION(BlueprintCallable) void LinkInteractuable(UInteractuableComp* interactuable);
+	UFUNCTION(BlueprintCallable) void LinkInteractuable(URamInteractuableComponent* interactuable);
 	UFUNCTION(BlueprintCallable) void UnlinkInteractuable();
 	UFUNCTION(BlueprintCallable) float GetValue();
 
