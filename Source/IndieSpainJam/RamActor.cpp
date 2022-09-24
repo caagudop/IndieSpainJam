@@ -29,7 +29,7 @@ void ARamActor::BeginPlay()
 
 	if (Origin == nullptr || Destination == nullptr || Selector == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Actor references bad configured"));
+		UE_LOG(LogTemp, Error, TEXT("Ram references bad configured"));
 		return;
 	}
 	
@@ -50,7 +50,6 @@ void ARamActor::BeginPlay()
 	Length = GetLightAbs(distance);
 
 	Selector->OnClicked.AddDynamic(this, &ARamActor::OnSelectorClicked);
-	Selector->OnReleased.AddDynamic(this, &ARamActor::OnSelectorReleased);	
 }
 
 // Called every frame
@@ -60,6 +59,10 @@ void ARamActor::Tick(float DeltaTime)
 
 	if (IsSelectorDragged)
 	{
+		if(PlayerController->WasInputKeyJustReleased(EKeys::LeftMouseButton))
+		{
+			OnReleased();
+		}
 		UpdateSelectorToMousePosition();
 	}
 	UE_LOG(LogTemp, Display, TEXT("Slider Value: %f"), GetValue());
@@ -93,7 +96,7 @@ float ARamActor::GetValue()
 {
 	if (Origin == nullptr || Destination == nullptr || Selector == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Actor references bad configured"));
+		UE_LOG(LogTemp, Error, TEXT("Ram references bad configured"));
 		return 0;
 	}
 	
@@ -113,7 +116,7 @@ void ARamActor::LinkInteractuable(UInteractuableComp* interactuable)
 {
 	if (Origin == nullptr || Destination == nullptr || Selector == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Actor references bad configured"));
+		UE_LOG(LogTemp, Error, TEXT("Ram references bad configured"));
 		return;
 	}
 	
@@ -144,7 +147,7 @@ void ARamActor::OnSelectorClicked(UPrimitiveComponent* TouchedComponent, FKey Bu
 	UE_LOG(LogTemp, Warning, TEXT("CLICKED!!"));
 }
 
-void ARamActor::OnSelectorReleased(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
+void ARamActor::OnReleased()
 {
 	IsSelectorDragged = false;
 	if (CurrentInteractuable != nullptr)

@@ -32,7 +32,7 @@ private:
 	void SyncActorAxis(USceneComponent* Component, UPrimitiveComponent* From);
 	float GetLightAbs(float value);
 	UFUNCTION() void OnSelectorClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
-	UFUNCTION() void OnSelectorReleased(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
+	void OnReleased();
 	void UpdateSelectorToMousePosition();
 	
 	float Length;
