@@ -40,4 +40,9 @@ public:
 
 	virtual void OnSlideUpdated_Implementation(float slideValue) override;
 	virtual float GetSlideValue_Implementation() const override;
+	
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReachedGoal);
+	UPROPERTY(BlueprintAssignable)
+	FReachedGoal OnReachedGoal;
+	
 };

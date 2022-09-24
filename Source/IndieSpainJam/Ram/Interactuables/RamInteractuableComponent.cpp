@@ -52,6 +52,10 @@ void URamInteractuableComponent::OnSlideUpdated_Implementation(float slideValue)
 {
 	SliderValue = FMath::Clamp(slideValue, 0.0, 1.0);
 	UE_LOG(LogTemp, Display, TEXT("Percentile value is %f"), SliderValue);
+	if (HasReachedGoal())
+	{
+		OnReachedGoal.Broadcast();
+	}
 }
 
 float URamInteractuableComponent::GetSlideValue_Implementation() const
