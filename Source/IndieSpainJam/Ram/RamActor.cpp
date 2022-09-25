@@ -66,8 +66,8 @@ void ARamActor::Tick(float DeltaTime)
 			OnReleased();
 		}
 		UpdateSelectorToMousePosition();
-	}
-	UE_LOG(LogTemp, Display, TEXT("Slider Value: %f"), GetValue());
+		UE_LOG(LogTemp, Display, TEXT("Slider Value: %f"), GetValue());
+	}	
 }
 
 void ARamActor::SyncActorAxis(USceneComponent* Component, UPrimitiveComponent* From)

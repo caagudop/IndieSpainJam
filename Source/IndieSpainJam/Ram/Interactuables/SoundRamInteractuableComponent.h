@@ -20,7 +20,12 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void OnSlideUpdated_Implementation(float slideValue) override;
 	virtual float GetSlideValue_Implementation() const override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void Break() override;
+	
 public:
+	virtual void OnActorClicked(AActor* Actor, FKey ButtonPressed) override;
+	
 	UPROPERTY(EditAnywhere)
 	USoundMix* SoundMix;
 	UPROPERTY(EditAnywhere)
@@ -29,9 +34,15 @@ public:
 	float MinVolume = 0;
 	UPROPERTY(EditAnywhere)
 	float MaxVolume = 1;
-
+	UPROPERTY(EditAnywhere)
+	float BrokenFluctuationSeconds = 3;
+	
 private:
-	float Diff;
-	UPROPERTY()
-	UMyGameInstance* GameInstance;
+
+	float GetValidRandomVolume();
+	void Fluctuate();
+	
+	float Diff;	
+	float volumeBeforeBreak = 0.0;
+	float fluctuationCooldown = 0.0;
 };

@@ -2,6 +2,7 @@
 
 
 #include "RamInteractuableComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 URamInteractuableComponent::URamInteractuableComponent()
@@ -18,10 +19,18 @@ URamInteractuableComponent::URamInteractuableComponent()
 void URamInteractuableComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
+	if (GameInstance == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("MyGameInstance not found"));
+		return;
+	}
+	GameInstance->RegisterPiece(PieceName, this);
+	
 	GetOwner()->OnClicked.AddDynamic(this, &URamInteractuableComponent::OnActorClicked);
-	OnSlideUpdated_Implementation(SliderValue);	
-	Initialized = true;
+	OnSlideUpdated_Implementation(SliderValue);
 }
 
 
@@ -53,13 +62,43 @@ void URamInteractuableComponent::OnSlideUpdated_Implementation(float slideValue)
 {
 	SliderValue = FMath::Clamp(slideValue, 0.0, 1.0);
 	UE_LOG(LogTemp, Display, TEXT("Percentile value is %f"), SliderValue);
-	if ((GoalReachedOnInteract && Initialized) || HasReachedGoal())
+	if (HasReachedGoal())
 	{
 		OnReachedGoal.Broadcast();
+		Broken = false;
+		if (GameInstance == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("MyGameInstance not found"));
+			return;
+		}
+		GameInstance->BrokenPieces.Remove(this);
 	}
 }
 
 float URamInteractuableComponent::GetSlideValue_Implementation() const
 {
 	return SliderValue;
+}
+
+void URamInteractuableComponent::Break()
+{
+	if (ErrorMargin == 1.0f)
+	{
+		return;
+	}
+	float breakValue = 0.0f;
+	bool found = false;
+	while (!found)
+	{
+		breakValue = FMath::RandRange(0.0f, 1.0f);
+		found = breakValue < (GoalValue - ErrorMargin) || breakValue > (GoalValue + ErrorMargin);
+	}
+	OnSlideUpdated_Implementation(breakValue);
+	Broken = true;
+	UE_LOG(LogTemp, Display, TEXT("Broken Piece: %s"), *GetOwner()->GetName());
+}
+
+bool URamInteractuableComponent::IsBroken()
+{
+	return Broken;
 }

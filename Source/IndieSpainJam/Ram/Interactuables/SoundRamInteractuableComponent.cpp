@@ -42,3 +42,54 @@ float USoundRamInteractuableComponent::GetSlideValue_Implementation() const
 	float volume = FMath::Clamp(GameInstance->MasterVolume, MinVolume, MaxVolume);
 	return (volume - MinVolume) / Diff;
 }
+
+void USoundRamInteractuableComponent::Break()
+{
+	if (GameInstance == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("MyGameInstance not found"));
+		return;
+	}
+	volumeBeforeBreak = GameInstance->MasterVolume;
+	Fluctuate();
+	Broken = true;
+	UE_LOG(LogTemp, Display, TEXT("Broken Piece: %s"), *GetOwner()->GetName());
+}
+
+void USoundRamInteractuableComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	if (IsBroken())
+	{
+		fluctuationCooldown -= DeltaTime;
+		if (fluctuationCooldown <= 0)
+		{
+			Fluctuate();
+		}
+	}
+}
+
+float USoundRamInteractuableComponent::GetValidRandomVolume()
+{
+	float min = MinVolume;
+	if (volumeBeforeBreak < MinVolume)
+	{
+		min = 0.0f;
+	}
+	return FMath::RandRange(min, volumeBeforeBreak);
+}
+
+void USoundRamInteractuableComponent::Fluctuate()
+{
+	fluctuationCooldown = BrokenFluctuationSeconds;
+	OnSlideUpdated_Implementation(GetValidRandomVolume());
+}
+
+void USoundRamInteractuableComponent::OnActorClicked(AActor* Actor, FKey ButtonPressed)
+{
+	if(IsBroken())
+	{
+		Broken = false;
+		GameInstance->BrokenPieces.Remove(this);
+	}
+	Super::OnActorClicked(Actor, ButtonPressed);
+}
