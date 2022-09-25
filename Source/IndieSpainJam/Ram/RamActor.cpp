@@ -67,7 +67,11 @@ void ARamActor::Tick(float DeltaTime)
 		}
 		UpdateSelectorToMousePosition();
 		UE_LOG(LogTemp, Display, TEXT("Slider Value: %f"), GetValue());
-	}	
+	}
+	if (PlayerController->WasInputKeyJustPressed(EKeys::RightMouseButton))
+	{
+		UnlinkAllInteractives();
+	}
 }
 
 void ARamActor::SyncActorAxis(USceneComponent* Component, UPrimitiveComponent* From)
