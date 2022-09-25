@@ -19,6 +19,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void OnSlideUpdated_Implementation(float slideValue) override;
+	virtual float GetSlideValue_Implementation() const override;
 public:
 	UPROPERTY(EditAnywhere)
 	USoundMix* SoundMix;
