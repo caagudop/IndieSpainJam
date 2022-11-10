@@ -2,6 +2,7 @@
 
 #include "RunnerSpawner.generated.h"
 
+class UEndlessRunnerSpawnerData;
 class URunnerSpawnerData;
 class ARunnerObstacle;
 
@@ -24,9 +25,11 @@ public:
 	ARunnerSpawner();
 
 	UFUNCTION(BlueprintCallable, Category = Spawner)
-	void SpawnObstacle(const TSubclassOf<ARunnerObstacle>& obstacleClass, float slideThreshold);
+	ARunnerObstacle* SpawnObstacle(const TSubclassOf<ARunnerObstacle>& obstacleClass, float slideThreshold);
 	UFUNCTION(BlueprintCallable, Category = Spawner)
 	void Run(URunnerSpawnerData* spawnData);
+	UFUNCTION(BlueprintCallable, Category = Spawner)
+	void RunEndless(UEndlessRunnerSpawnerData* spawnData);
 	UFUNCTION(BlueprintCallable, Category = Spawner)
 	void DestroyObstacle(ARunnerObstacle* obstacle);
 	UFUNCTION(BlueprintCallable, Category = Spawner)
@@ -53,12 +56,25 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Spawner)
 	TObjectPtr<URunnerSpawnerData> SpawnDataAsset = nullptr;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Spawner)
+	TObjectPtr<UEndlessRunnerSpawnerData> EndlessSpawnDataAsset = nullptr;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Spawner)
 	int32 NextSpawnDataIdx = -1;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Spawner)
+	int32 LastObstacleIdx = 0;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Spawner)
+	int32 ConsecutiveObstacles = 0;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Spawner)
+	int32 EndlessObstaclesSpawned = 0;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Spawner)
+	TObjectPtr<ARunnerObstacle> SendErrorObstacle;
 
 	UPROPERTY(BlueprintReadOnly, Category = Spawner)
 	FTimerHandle NextObstacleTimer;
 
 	FTimerHandle WaitPlayerFailedTimer;
+	FTimerHandle WaitToNextError;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Spawner)
 	void OnAllObstaclesPassed();
@@ -71,5 +87,6 @@ protected:
 	void OnObstacleHit(ARunnerObstacle* obstacle, bool bPlayerSuccess);
 
 	void SpawnNextObstacle();
+	void SpawnNextEndlessObstacle();
 	
 }; // ARunnerSpawner

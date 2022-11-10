@@ -33,25 +33,16 @@ void UMyGameInstance::BreakRandomPiece()
 	{
 		return;
 	}
-	bool found = false;
-	while(!found)
+	
+	TArray<FName> componentNames;
+	Pieces.GetKeys(componentNames);
+	int32 pieceNumber = FMath::RandRange(0, componentNames.Num() - 1);
+	while (Pieces[componentNames[pieceNumber]]->IsBroken())
 	{
-		int pieceNumber = FMath::RandRange(0, Pieces.Num());
-		int index = 0;
-		for (auto& Piece : Pieces)
-		{
-			if (index != pieceNumber)
-			{
-				index++;
-				continue;
-			}
-			if (!Piece.Value->IsBroken())
-			{
-				found = true;
-				Piece.Value->Break();
-				BrokenPieces.Add(Piece.Value);
-				break;
-			}
-		}
+		pieceNumber = FMath::RandRange(0, componentNames.Num() - 1);
 	}
-}
+
+	Pieces[componentNames[pieceNumber]]->Break();
+	BrokenPieces.Add(Pieces[componentNames[pieceNumber]]);
+	
+} // BreakRandomPiece

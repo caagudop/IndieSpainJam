@@ -1,7 +1,9 @@
 ﻿#include "RunnerSpawner.h"
 
+#include "EndlessRunnerSpawnerData.h"
 #include "RunnerObstacle.h"
 #include "RunnerSpawnerData.h"
+#include "IndieSpainJam/MyGameInstance.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -13,11 +15,11 @@ ARunnerSpawner::ARunnerSpawner() : Super()
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-void ARunnerSpawner::SpawnObstacle(const TSubclassOf<ARunnerObstacle>& obstacleClass, float slideThreshold)
+ARunnerObstacle* ARunnerSpawner::SpawnObstacle(const TSubclassOf<ARunnerObstacle>& obstacleClass, float slideThreshold)
 {
 	if (obstacleClass == nullptr)
 	{
-		return;
+		return nullptr;
 	}
 
 	if (!AvailableObstacles.Contains(obstacleClass))
@@ -39,6 +41,7 @@ void ARunnerSpawner::SpawnObstacle(const TSubclassOf<ARunnerObstacle>& obstacleC
 	obstacle->SetSlideThreshold(slideThreshold);
 	obstacle->SetActorTransform(GetActorTransform());
 	obstacle->SetObstacleActive(true);
+	return obstacle;
 	
 } // SpawnObstacle
 
@@ -55,8 +58,26 @@ void ARunnerSpawner::Run(URunnerSpawnerData* spawnDataAsset)
 	NextSpawnDataIdx = 0;
 	bMaxObstaclesCap = true;
 	MaxObstaclesCap = spawnDataAsset->SpawnData.Num();
+	SpawnNextObstacle();
 	
 } // Run
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+void ARunnerSpawner::RunEndless(UEndlessRunnerSpawnerData* spawnData)
+{
+	if (spawnData == nullptr)
+	{
+		return;
+	}
+
+	EndlessSpawnDataAsset = spawnData;
+	SpawnDataAsset = nullptr;
+	NextSpawnDataIdx = -1;
+	bMaxObstaclesCap = false;
+	SpawnNextEndlessObstacle();
+	
+} // RunEndless
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -123,6 +144,20 @@ void ARunnerSpawner::OnObstacleHit(ARunnerObstacle* obstacle, bool bPlayerSucces
 		{
 			OnAllObstaclesPassed();
 		}
+		else if (SendErrorObstacle != nullptr)
+		{
+			SendErrorObstacle->Reset();
+			if (UMyGameInstance* gameInstance = Cast<UMyGameInstance>(GetGameInstance()))
+			{
+				gameInstance->BreakRandomPiece();
+			}
+
+			FTimerManager& timeManager = GetWorldTimerManager();
+			timeManager.SetTimer(NextObstacleTimer, this, &ARunnerSpawner::SpawnNextEndlessObstacle,
+				EndlessSpawnDataAsset->AdditionalSpawnTime);
+			timeManager.SetTimer(WaitToNextError, EndlessSpawnDataAsset->WaitTimeUntilNewError, false);
+			
+		}
 	}
 	else
 	{
@@ -170,5 +205,45 @@ void ARunnerSpawner::SpawnNextObstacle()
 	}
 	
 } // SpawnNextObstacle
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+void ARunnerSpawner::SpawnNextEndlessObstacle()
+{
+	if (EndlessSpawnDataAsset.IsNull())
+	{
+		return;
+	}
+
+
+	LastObstacleClass;
+	EndlessSpawnDataAsset->ComboObstaclesData
+	
+	static constexpr int32 MAX_CONSECUTIVE_OBSTACLES = 3;
+	if (ConsecutiveObstacles >= MAX_CONSECUTIVE_OBSTACLES)
+	{
+		
+	}
+
+	ARunnerObstacle* lastObstacle = nullptr;
+	for (const FObstacleEndlessSpawnerData& obstacle : EndlessSpawnDataAsset->ComboObstaclesData[idx].ObstaclesData)
+	{
+		lastObstacle = SpawnObstacle(obstacle.ObstacleType, FMath::RandRange(obstacle.MinSlideValue, obstacle.MaxSlideValue));
+	}
+	++EndlessObstaclesSpawned;
+	
+	if (!GetWorldTimerManager().IsTimerActive(WaitToNextError) && EndlessSpawnDataAsset.IsNull() &&
+		EndlessObstaclesSpawned > 0 && EndlessObstaclesSpawned % EndlessSpawnDataAsset->SpawnsNumToCheck == 0 &&
+		100.f * FMath::RandRange(0.f, 1.f) <= EndlessSpawnDataAsset->ErrorProbability)
+	{
+		SendErrorObstacle = lastObstacle;
+	}
+	else
+	{
+		const float nextSpawnTime = FMath::RandRange(EndlessSpawnDataAsset->MinSpawnTime, EndlessSpawnDataAsset->MaxSpawnTime);
+		GetWorldTimerManager().SetTimer(NextObstacleTimer, this, &ARunnerSpawner::SpawnNextEndlessObstacle, nextSpawnTime);
+	}
+	
+} // SpawnNextEndlessObstacle
 
 // ---------------------------------------------------------------------------------------------------------------------
