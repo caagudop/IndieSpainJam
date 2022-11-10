@@ -23,7 +23,8 @@ public:
 	void BreakRandomPiece();
 	UFUNCTION(BlueprintCallable)
 	void BreakPiece(FName Name);
-	
+
+	UPROPERTY(BlueprintReadWrite)
 	float MasterVolume = 1;
 	UPROPERTY() TArray<URamInteractuableComponent*> BrokenPieces;
 	
